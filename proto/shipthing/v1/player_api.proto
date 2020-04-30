@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package shipthing.v1;
+
+option csharp_namespace = "Shipthing.V1";
+option go_package = "shipthingv1";
+option java_multiple_files = true;
+option java_outer_classname = "PlayerApiProto";
+option java_package = "com.shipthing.v1";
+option objc_class_prefix = "SXX";
+option php_namespace = "Shipthing\\V1";
+
+// The main service that can be used to control a player on the server.
+service PlayerAPI {
+    // Get the current server configuration.
+    rpc GetConfig(GetConfigRequest) returns (GetConfigResponse);
+    // Join the server as a new player.
+    rpc Join (JoinRequest) returns (JoinResponse);
+}
+
+// The request payload for getting the current server config.
+message GetConfigRequest {
+    // empty
+}
+
+// The response payload for getting the current server config.
+message GetConfigResponse {
+    // The width of the world, before coordinates wrap around.
+    uint32 world_width = 1;
+
+    // The height of the world, before coordinates wrap around.
+    uint32 world_height = 2;
+
+    // The minimum energy level needed in the ship battery to perform any action.
+    double energy_min_level = 3;
+
+    // The maximum energy level that can be stored in the ship battery.
+    double energy_max_level = 4;
+
+    // The rate at which energy replenishes (i.e. from the ships reactor core).
+    double energy_replenish_rate = 5;
+
+    // The relative cost of performing an engine boost.
+    //
+    // In other words, to accelerate with acceleration `x units/sec²`, you need `x * energy_boost_cost energy/sec`.
+    double energy_boost_cost = 6;
+
+    // The radius of a ship.
+    double ship_radius = 7;
+
+    // The initial velocity of a ship when joining.
+    double ship_initial_velocity = 8;
+}
+
+// The request payload for joining as a new player.
+message JoinRequest {
+    // Your visible display name in this game session.
+    //
+    // You can choose this to be whatever you want, but the server will  make sure that it can be displayed correctly,
+    // for example truncating it if it is too long, or adding something in case there are several users with the same
+    // name.
+    string name = 1;
+
+    // Your player secret.
+    //
+    // Should be a 16 byte UUID!  This is used to keep track of high scores etc. so don't share it with anyone you want
+    // to compete with!
+    bytes secret = 2;
+}
+
+// The response payload when joining as a new player.
+message JoinResponse {
+    // The session ID, which is needed to make other requests, and is valid until you disconnect.
+    bytes session_id = 1;
+}
